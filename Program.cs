@@ -209,14 +209,6 @@ internal static class Program
             }
         }
 
-        foreach (var (path, currentHash) in currentHashes)
-        {
-            if (!expectedHashes.ContainsKey(path))
-            {
-                differences.Add(new FileDifference("New", path, "-", currentHash));
-            }
-        }
-
         return differences
             .OrderBy(static difference => difference.Path, StringComparer.OrdinalIgnoreCase)
             .ThenBy(static difference => difference.Status, StringComparer.OrdinalIgnoreCase)
@@ -227,7 +219,6 @@ internal static class Program
     {
         var changedCount = differences.Count(static difference => difference.Status == "Changed");
         var missingCount = differences.Count(static difference => difference.Status == "Missing");
-        var newCount = differences.Count(static difference => difference.Status == "New");
 
         var summary = new Grid()
             .AddColumn(new GridColumn().NoWrap())
@@ -237,7 +228,6 @@ internal static class Program
         summary.AddRow("[bold]Differences[/]", $"[red]{differences.Count}[/]");
         summary.AddRow("[bold]Changed[/]", $"[yellow]{changedCount}[/]");
         summary.AddRow("[bold]Missing[/]", $"[red]{missingCount}[/]");
-        summary.AddRow("[bold]New[/]", $"[blue]{newCount}[/]");
 
         AnsiConsole.Write(
             new Panel(summary)
@@ -263,7 +253,6 @@ internal static class Program
             {
                 "Changed" => "yellow",
                 "Missing" => "red",
-                "New" => "blue",
                 _ => "white"
             };
 
