@@ -1,67 +1,67 @@
-# MD5 File Integrity Checker
+# MD5 文件完整性校验工具
 
-A fast, native-AOT-compiled CLI tool for verifying file integrity using MD5 hashes, with a polished terminal UI powered by [Spectre.Console](https://spectreconsole.net/).
+基于 .NET 10 NativeAOT 编译的高性能文件完整性校验工具，使用 MD5 哈希算法，配合 [Spectre.Console](https://spectreconsole.net/) 提供精美的终端界面。
 
-## Features
+## 功能特性
 
-- **Baseline Creation** — On first run, recursively scans all files in the current directory and writes an `md5.txt` manifest.
-- **Integrity Verification** — On subsequent runs, compares every file against the stored manifest.
-- **Change Detection** — Clearly reports **Changed**, **Missing**, and **New** files with both expected and actual hashes.
-- **Native AOT** — Compiled to native code with .NET 10 NativeAOT for instant startup and zero runtime dependencies.
-- **Rich Terminal UI** — Figlet header, spinners, color-coded tables, and panels via Spectre.Console.
+- **基线建立** — 首次运行时递归扫描当前目录下所有文件，生成 `md5.txt` 清单文件。
+- **完整性校验** — 后续运行时会逐一对比文件与清单中的哈希值。
+- **变更检测** — 清晰报告 **已变更**、**已删除**、**新增** 的文件，同时显示预期和实际哈希值。
+- **原生 AOT** — 使用 .NET 10 NativeAOT 编译为原生代码，启动迅速，无需运行时依赖。
+- **丰富的终端界面** — 通过 Spectre.Console 呈现 Figlet 标题、加载动画、彩色表格和面板。
 
-## Requirements
+## 环境要求
 
 - [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0)
 
-## Build & Publish
+## 构建与发布
 
 ```bash
-# Build (debug)
+# 调试构建
 dotnet build
 
-# Publish as single-file native executable
+# 发布为单文件原生可执行程序
 dotnet publish -c Release -o publish
 ```
 
-The compiled native executable will be at `publish\MD5.exe`.
+编译后的原生可执行文件位于 `publish\MD5.exe`。
 
-## Usage
+## 使用方法
 
 ```bash
-# Create baseline (first run in a directory)
+# 首次在目录中运行，建立基线
 MD5.exe
 
-# Verify integrity (subsequent runs)
+# 再次运行，校验文件完整性
 MD5.exe
 
-# Pipe-friendly mode (no interactive prompt)
+# 管道友好模式（无交互提示）
 echo. | MD5.exe
 ```
 
-### Exit Codes
+### 退出码
 
-| Code | Meaning              |
-|------|----------------------|
-| 0    | PASS — all files match |
-| 1    | FAILED — differences found |
-| 2    | Error                |
+| 代码 | 含义                |
+|------|---------------------|
+| 0    | 通过 — 所有文件匹配 |
+| 1    | 失败 — 发现差异      |
+| 2    | 错误                |
 
-## Manifest Format (`md5.txt`)
+## 清单文件格式 (`md5.txt`)
 
 ```
-<hash>  <relative/path>
-<hash>  <relative/path>
+<哈希值>  <相对路径>
+<哈希值>  <相对路径>
 ...
 ```
 
-Example:
+示例：
 
 ```
 d41d8cd98f00b204e9800998ecf8427e  data/config.json
 5d41402abc4b2a76b9719d911017c592  src/main.cs
 ```
 
-## License
+## 开源许可
 
 MIT
