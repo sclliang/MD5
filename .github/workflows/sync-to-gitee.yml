@@ -13,12 +13,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout all refs
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
       - name: Mirror to Gitee
         run: |
-          git fetch origin --prune "+refs/heads/*:refs/heads/*" "+refs/tags/*:refs/tags/*"
+          git fetch --prune origin "+refs/heads/*:refs/mirror/heads/*" "+refs/tags/*:refs/mirror/tags/*"
           git remote add gitee "https://sclliang:${{ secrets.GITEE_TOKEN }}@gitee.com/sclliang/MD5.git"
-          git push --prune gitee "+refs/heads/*:refs/heads/*" "+refs/tags/*:refs/tags/*"
+          git push --prune gitee "+refs/mirror/heads/*:refs/heads/*" "+refs/mirror/tags/*:refs/tags/*"
