@@ -17,8 +17,30 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Wait for Gitee reachability
+        run: |
+          for i in $(seq 1 12); do
+            if curl -sS -o /dev/null --connect-timeout 20 "https://gitee.com/sclliang/MD5.git/info/refs?service=git-upload-pack"; then
+              echo "Gitee reachable (attempt $i)"
+              exit 0
+            fi
+            echo "Gitee not reachable yet (attempt $i), retrying in 15s..."
+            sleep 15
+          done
+          echo "Gitee unreachable after 12 attempts"
+          exit 1
+
       - name: Mirror to Gitee
         run: |
           git fetch --prune origin "+refs/heads/*:refs/mirror/heads/*" "+refs/tags/*:refs/mirror/tags/*"
           git remote add gitee "https://sclliang:${{ secrets.GITEE_TOKEN }}@gitee.com/sclliang/MD5.git"
-          git push --prune gitee "+refs/mirror/heads/*:refs/heads/*" "+refs/mirror/tags/*:refs/tags/*"
+          for i in 1 2 3; do
+            if git push --prune gitee "+refs/mirror/heads/*:refs/heads/*" "+refs/mirror/tags/*:refs/tags/*"; then
+              echo "Mirror push OK (attempt $i)"
+              exit 0
+            fi
+            echo "push attempt $i failed, retrying in 20s..."
+            sleep 20
+          done
+          echo "mirror push failed after 3 attempts"
+          exit 1
